@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Application/Calculadora.Application.csproj" Id="56dbc54b-1bfb-467d-b128-cb6e9f5c7a1a" />
+  <Project Path="Calculadora.Api/Calculadora.Api.csproj" Id="d1404217-4d37-4331-9184-42e9ce0b88b9" />
+  <Project Path="Calculadora.Persistence/Calculadora.Persistence.csproj" Id="9990201e-1ac5-47b0-9112-ea8903f7ab4c" />
+  <Project Path="Domain/Calculadora.Domain.csproj" Id="bfe4601a-eb9a-40ee-b181-57336ad1bbc6" />
+  <Project Path="Infrastructure/Calculadora.Infrastructure.csproj" Id="6cd8de49-e206-42ea-b3c5-e234669c5b6a" />
+</Solution>
