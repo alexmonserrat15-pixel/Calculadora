@@ -4,7 +4,11 @@ using System.Text;
 
 namespace Calculadora.Domain.Entities
 {
-    internal class Tasa
+    public class Tasa
     {
+        public int id { get; set; }
+        public string pais_nombre { get; set; }
+        public decimal tarifa_usd { get; set; }
+        public DateTime creado_en { get; set; }
     }
 }
