@@ -1,6 +1,6 @@
 # 📦 Calculadora de Tarifas de Envío Internacional
 
-Aplicación web desarrollada en ASP.NET Core MVC con arquitectura en capas que permite calcular el costo de envío internacional según el peso del paquete y el país de destino.
+Aplicación web desarrollada en ASP.NET Core MVC con arquitectura en capas que permite calcular el costo de envío internacional según el peso del paquete y el país de destino. Incluye un panel de administración protegido para gestionar las tarifas.
 
 ---
 
@@ -38,6 +38,20 @@ El proyecto está desarrollado con una arquitectura en capas:
 
 ---
 
+## 🔐 Módulo de autenticación
+
+El sistema incluye un panel administrativo protegido por sesión. El administrador puede:
+
+- Iniciar sesión con usuario y contraseña
+- Ver todas las tasas registradas
+- Agregar nuevos países con su tarifa
+- Editar tarifas existentes
+- Eliminar países
+
+El enlace de acceso aparece al pie de la calculadora como **"Acceso administrativo"**.
+
+---
+
 ## 🗄️ Base de datos
 
 SQL Server — base de datos `Calculadora`.
@@ -48,6 +62,13 @@ CREATE TABLE tasa (
     pais_nombre VARCHAR(100)   NOT NULL,
     tarifa_usd  DECIMAL(10,2)  NOT NULL,
     creado_en   DATETIME       NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE usuarios (
+    id            INT            IDENTITY(1,1) PRIMARY KEY,
+    usuario       VARCHAR(50)    NOT NULL UNIQUE,
+    password_hash VARCHAR(256)   NOT NULL,
+    creado_en     DATETIME       NOT NULL DEFAULT GETDATE()
 );
 ```
 
@@ -64,7 +85,7 @@ CREATE TABLE tasa (
 
 1. Clona el repositorio:
 ```bash
-   git clone https://github.com/alexmonserrat15-pixel/Calculadora.git
+   git clone https://github.com/tu-usuario/calculadora-envios.git
 ```
 
 2. Crea la base de datos en SQL Server:
@@ -83,6 +104,16 @@ CREATE TABLE tasa (
        ('India', 5.00),
        ('Estados Unidos', 8.00),
        ('Reino Unido', 10.00);
+
+   CREATE TABLE usuarios (
+       id            INT            IDENTITY(1,1) PRIMARY KEY,
+       usuario       VARCHAR(50)    NOT NULL UNIQUE,
+       password_hash VARCHAR(256)   NOT NULL,
+       creado_en     DATETIME       NOT NULL DEFAULT GETDATE()
+   );
+
+   INSERT INTO usuarios (usuario, password_hash)
+   VALUES ('admin', 'tu_contraseña');
 ```
 
 3. Configura la cadena de conexión en `Calculadora.MVC/appsettings.json`:
@@ -101,10 +132,13 @@ CREATE TABLE tasa (
 ---
 
 ## 📁 Estructura del proyecto
+
+```
 Calculadora.sln
 ├── Calculadora.Domain
 │   ├── Entities/
 │   │   ├── Tasa.cs
+│   │   ├── Usuario.cs
 │   │   ├── TarifaBase.cs
 │   │   ├── TarifaIndia.cs
 │   │   ├── TarifaEstadosUnidos.cs
@@ -112,20 +146,51 @@ Calculadora.sln
 │   ├── Factories/
 │   │   └── TarifaFactory.cs
 │   └── Interfaces/
-│       └── ITasaRepository.cs
+│       ├── ITasaRepository.cs
+│       └── IUsuarioRepository.cs
 ├── Calculadora.Application
-│   ├── DTOs/
+│   ├── Dtos/
+│   │   ├── EnvioRequestDto.cs
+│   │   ├── EnvioResponseDto.cs
+│   │   └── LoginRequestDto.cs
 │   ├── Interfaces/
+│   │   ├── IEnvioService.cs
+│   │   ├── ITasaService.cs
+│   │   └── IAuthService.cs
 │   └── Services/
+│       ├── EnvioService.cs
+│       ├── TasaService.cs
+│       └── AuthService.cs
 ├── Calculadora.Infrastructure
 │   ├── Data/
+│   │   └── ApplicationDbContext.cs
 │   └── Repositories/
+│       ├── TasaRepository.cs
+│       └── UsuarioRepository.cs
 ├── Calculadora.API
 │   └── Controllers/
+│       └── EnvioController.cs
 └── Calculadora.MVC
-├── Controllers/
-├── Models/
-└── Views/
+    ├── Controllers/
+    │   ├── EnvioController.cs
+    │   ├── AuthController.cs
+    │   └── AdminController.cs
+    ├── Filters/
+    │   └── SessionAuthFilter.cs
+    ├── Models/
+    │   ├── EnvioViewModel.cs
+    │   ├── LoginViewModel.cs
+    │   └── ErrorViewModel.cs
+    └── Views/
+        ├── Envio/
+        │   └── Index.cshtml
+        ├── Auth/
+        │   └── Login.cshtml
+        └── Admin/
+            ├── Index.cshtml
+            ├── Crear.cshtml
+            └── Editar.cshtml
+```
 
 ---
 
