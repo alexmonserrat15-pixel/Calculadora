@@ -21,7 +21,18 @@ namespace Calculadora.MVC
 
             // Inyección de dependencias
             builder.Services.AddScoped<ITasaRepository, TasaRepository>();
+            builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             builder.Services.AddScoped<IEnvioService, EnvioService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ITasaService, TasaService>();
+
+            // Sesión
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -35,13 +46,13 @@ namespace Calculadora.MVC
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Envio}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

@@ -9,5 +9,9 @@ namespace Calculadora.Domain.Repository
     {
         Task<IEnumerable<Tasa>> GetAllAsync();
         Task<Tasa> GetByPaisNombreAsync(string paisNombre);
+        Task<Tasa> GetByIdAsync(int id);       
+        Task AddAsync(Tasa tasa);               
+        Task UpdateAsync(Tasa tasa);            
+        Task DeleteAsync(int id);
     }
 }

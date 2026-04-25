@@ -1,4 +1,4 @@
-﻿using Calculadora.Domain.Entities;
+using Calculadora.Domain.Entities;
 using Calculadora.Domain.Repository;
 using Calculadora.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +26,33 @@ namespace Calculadora.Infrastructure.Repositories
         {
             return await _context.Tasas
                 .FirstOrDefaultAsync(t => t.pais_nombre == paisNombre);
+        }
+        public async Task<Tasa> GetByIdAsync(int id)
+        {
+            return await _context.Tasas
+                .FirstOrDefaultAsync(t => t.id == id);
+        }
+
+        public async Task AddAsync(Tasa tasa)
+        {
+            await _context.Tasas.AddAsync(tasa);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(Tasa tasa)
+        {
+            _context.Tasas.Update(tasa);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var tasa = await GetByIdAsync(id);
+            if (tasa != null)
+            {
+                _context.Tasas.Remove(tasa);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
