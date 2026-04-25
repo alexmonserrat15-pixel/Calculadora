@@ -1,0 +1,138 @@
+# 📦 Calculadora de Tarifas de Envío Internacional
+
+Aplicación web desarrollada en ASP.NET Core MVC con arquitectura en capas que permite calcular el costo de envío internacional según el peso del paquete y el país de destino.
+
+---
+
+## 🏗️ Arquitectura
+
+El proyecto está desarrollado con una arquitectura en capas:
+
+| Capa | Proyecto | Responsabilidad |
+|---|---|---|
+| Presentación | `Calculadora.MVC` | Interfaz de usuario (Controller, View, ViewModel) |
+| Lógica de negocio | `Calculadora.Application` | Servicios y DTOs |
+| Dominio | `Calculadora.Domain` | Entidades, Factory e interfaces |
+| Infraestructura | `Calculadora.Infrastructure` | Repositorio y DbContext (EF Core) |
+| API REST | `Calculadora.API` | Endpoints REST opcionales |
+
+---
+
+## 📐 Principios aplicados
+
+- **Open/Closed Principle (OCP):** Cada país tiene su propia clase que hereda de `TarifaBase`. Para agregar un nuevo país basta con crear una nueva clase sin modificar el código existente.
+- **Inyección de dependencias:** Todas las capas se comunican a través de interfaces.
+- **Separación de responsabilidades:** Cada capa tiene una única responsabilidad definida.
+
+---
+
+## 🌍 Reglas de negocio
+
+| País | Tarifa por kg |
+|---|---|
+| India | $5.00 USD |
+| Estados Unidos | $8.00 USD |
+| Reino Unido | $10.00 USD |
+
+**Fórmula:** `Costo total = Peso (kg) × Tarifa (USD)`
+
+---
+
+## 🗄️ Base de datos
+
+SQL Server — base de datos `Calculadora`.
+
+```sql
+CREATE TABLE tasa (
+    id          INT            IDENTITY(1,1) PRIMARY KEY,
+    pais_nombre VARCHAR(100)   NOT NULL,
+    tarifa_usd  DECIMAL(10,2)  NOT NULL,
+    creado_en   DATETIME       NOT NULL DEFAULT GETDATE()
+);
+```
+
+---
+
+## 🚀 Cómo ejecutar el proyecto
+
+### Requisitos previos
+- .NET 8 SDK
+- SQL Server
+- Visual Studio 2022
+
+### Pasos
+
+1. Clona el repositorio:
+```bash
+   git clone https://github.com/alexmonserrat15-pixel/Calculadora.git
+```
+
+2. Crea la base de datos en SQL Server:
+```sql
+   CREATE DATABASE Calculadora;
+   USE Calculadora;
+
+   CREATE TABLE tasa (
+       id          INT            IDENTITY(1,1) PRIMARY KEY,
+       pais_nombre VARCHAR(100)   NOT NULL,
+       tarifa_usd  DECIMAL(10,2)  NOT NULL,
+       creado_en   DATETIME       NOT NULL DEFAULT GETDATE()
+   );
+
+   INSERT INTO tasa (pais_nombre, tarifa_usd) VALUES
+       ('India', 5.00),
+       ('Estados Unidos', 8.00),
+       ('Reino Unido', 10.00);
+```
+
+3. Configura la cadena de conexión en `Calculadora.MVC/appsettings.json`:
+```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=TU_SERVIDOR;Database=Calculadora;Trusted_Connection=True;TrustServerCertificate=True;"
+     }
+   }
+```
+
+4. Establece `Calculadora.MVC` como proyecto de inicio en Visual Studio.
+
+5. Ejecuta el proyecto con **F5**.
+
+---
+
+## 📁 Estructura del proyecto
+Calculadora.sln
+├── Calculadora.Domain
+│   ├── Entities/
+│   │   ├── Tasa.cs
+│   │   ├── TarifaBase.cs
+│   │   ├── TarifaIndia.cs
+│   │   ├── TarifaEstadosUnidos.cs
+│   │   └── TarifaReinoUnido.cs
+│   ├── Factories/
+│   │   └── TarifaFactory.cs
+│   └── Interfaces/
+│       └── ITasaRepository.cs
+├── Calculadora.Application
+│   ├── DTOs/
+│   ├── Interfaces/
+│   └── Services/
+├── Calculadora.Infrastructure
+│   ├── Data/
+│   └── Repositories/
+├── Calculadora.API
+│   └── Controllers/
+└── Calculadora.MVC
+├── Controllers/
+├── Models/
+└── Views/
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- ASP.NET Core MVC (.NET 8)
+- Entity Framework Core
+- SQL Server
+- Bootstrap 5
+- C#
